@@ -582,7 +582,7 @@ document.querySelector('input').addEventListener('change', function()
          {
             var reader = new FileReader();
             reader.onload = function() {
-                var arrayBuffer = this.result,
+                var arrayBuffer = "Stock Details.xlsx",
                     array = new Uint8Array(arrayBuffer),
                     binaryString = String.fromCharCode.apply(null, array);
                 /* set up XMLHttpRequest */
