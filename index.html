@@ -18,7 +18,7 @@
     <body onload="resetValues()">
         <h1>Bill Intellect</h1>
         <hr>
-        <input type="file" id="data" accept=".xlsx"  style="margin-left:20px;" />
+        <input type="file" id="data" accept=".xlsx"  style="margin-left:20px;"/>
          <button class="addminus" onclick="addForm()"> Add Product
                    </button>
         <div class="container-fluid">
@@ -94,9 +94,18 @@
                 </div>
             </div>
           -->
+         
+
         </form>
+    <div id="addon" style="display: none;">
       <br>
-       
+          <hr>
+        
+        <label style="margin-left: 30px;">Labour Charges :</label><input type="number" id="labour" required>
+        <label style="float:right;margin-right: 30px;"> Transport Charges<input type="number" id="transport" required>
+        </div>
+      <br>
+                   
                      <button onclick="generateBill()" id="submitbutton" style="display: none;">Generate Bill</a>
                       </div>
     </body>
@@ -295,6 +304,8 @@ console.log(calculation)
 
        
     form.appendChild(div);
+    form.appendChild(br);
+    document.getElementById("addon").style.display="block";
     document.getElementById("submitbutton").style.display="block";
 
 }
@@ -358,7 +369,9 @@ function generateBill(){
       var items=[]
       var i;
       var selectno=0,inputno=4;
+      //alert("sections:"+section_number)
       for(i=1;i<=section_number;i++){
+        //alert(i+"select no"+selectno)
         //Take values from from
         var productname=document.getElementsByTagName("select")[selectno++].value
         var category=document.getElementsByTagName("select")[selectno++].value;
@@ -367,13 +380,19 @@ function generateBill(){
         var qty=document.getElementsByTagName("input")[inputno++].value;
         var size1=document.getElementsByTagName("input")[inputno++].value;
         var size2=document.getElementsByTagName("input")[inputno++].value;
-        var height= document.getElementsByTagName("input")[inputno++].value;      
+        var height= document.getElementsByTagName("input")[inputno++].value;  
+        //alert("Product"+productname+"size"+size1+"by"+size2+"thickness"+thickness+"height"+height);    
         if(productname=="Plywood"){
           height="";
         }
-        else if(productname=="Laminates" || productname=="Veneer" || productname=="Decorative Panels" || productname=="Lipping" || productname=="Abrotape" || productname=="Fevicol")
+        else if( productname=="Laminates" || productname=="Veneer" || productname=="Decorative Panels" || productname=="Lipping" || productname=="Abrotape" || productname=="Fevicol")
         {
-size1=size2=thickness=height="";
+         //alert("m in")
+          size1="";
+          size2="";
+          thickness="";
+            height="";
+            //alert("Product"+productname+"size"+size1+"by"+size2+"thickness"+thickness+"height"+height);  
         }
         else if(productname=="Teakwood" || productname=="Burmateak"){
             thickness="";
@@ -392,13 +411,17 @@ size1=size2=thickness=height="";
         //alert("Product"+productname+"size"+size1+"by"+size2+"thickness"+thickness+"height"+height);
         var item;
         if(height!="")
-         item=category+" "+productname+" "+height+"ft";
+         item=category+" "+productname+" "+thickness+" "+height+"ft";
         else
-        item=category+" "+productname;
+        item=category+" "+productname+" "+thickness;
         if(size1!="" && size2!="")
             size=size1+" by "+size2;
           else
             size="";
+        var labour=parseFloat(document.getElementById("labour").value);
+       //alert(labour)
+        var transport=parseFloat(document.getElementById("transport").value);
+        //alert(transport)
         var itemobj={
           itemp:item+" "+size,
           qtyp:qty,
@@ -409,11 +432,11 @@ size1=size2=thickness=height="";
         items.push(itemobj);
       }
     //alert(items)
-      var a;
+      /**var a;
       for(i=0;i<items.length;i++){
        a=items[i].itemp;
       }
-      //alert(a)
+      alert(a)**/
       var d=new Date();
       var day=d.getDate();
       var m=d.getMonth()+1;
@@ -421,7 +444,7 @@ size1=size2=thickness=height="";
       var v=1;
      //alert(localStrorage.getItem(invoiceno))
      //"<br><b>Invoice No.</b>:"+v+"
-    document.write("<button style=\"float:right;margin:20px;\" onclick=\"closethedoc()\">Close</button><button id=\"download-button\" style=\"margin:20px;\" onclick=\"generatePDF()\">Download as PDF</button> <br><br><div style=\"border: 2px solid black;padding:20px;margin:10px;\"  id=\"invoice\"> <div style=\"text-align:center\"><h1>||ॐ||</h1><br><br> </div><hr>");
+    document.write("<button style=\"float:right;margin:20px;\" onclick=\"closethedoc()\">Close</button><button id=\"download-button\" style=\"margin:20px;\" onclick=\"generatePDF()\">Download as PDF</button> <br><br><div style=\"border: 2px solid black;padding:20px;margin:10px;\"  id=\"invoice\"> <div style=\"text-align:center\"><h1>||ॐ||</h1><h2>Quotation</h2><br><br> </div><hr>");
     document.write("<div class=\"container\" style=\"padding-left:20px;padding-right:20px;font-size:20px\"><p style=\"float:right\"><b>Date</b> : "+day+"-"+m+"-"+y+"</p><p style=\"text-align:left\">To,<br><b>Customer Name</b> : <span id=\"cname\">" +cname+"</span><br><b>Site</b> : "+site+"<br><b>Contact Person</b> : "+contactname+"  "+contactnumber+"</p></div><hr>");
     document.write("<table width=\"100%\" style=\"font-size:20px\" ><tr style=\"text-align:left\"><th>Srno</th><th>Item</th><th>Rate</th><th>Qty.</th><th>Amount</th><tr>");
 
@@ -432,7 +455,11 @@ for(sno=1;sno<=section_number;sno++){
     document.write("<tr><td>"+sno+"</td><td>"+a.itemp+"</td><td> "+a.ratep+"</td><td>"+a.qtyp+"</td><td>"+(a.amount)+"</td></tr>")
     total+=parseFloat(a.amount);
 }
-document.write("</table><hr><p style=\"text-align:right;margin-right:20px;font-size:22px\" ><b>Total  ₹"+total+"/-</b><br><br><b>+18%GST</b></p><hr>");
+var grandTotal=0;
+
+grandTotal=transport+total+labour;
+//alert(grandTotal)
+document.write("</table><hr><table style=\"font-size:22px;text-align:left;margin-right:60px;margin-left:74%\" ><tr><th>Total  :</th><th  style=\"text-align:right\">"+total+"/-</th></tr><tr><th>Labour charges:</th><td  style=\"text-align:right\">"+labour+"/-</td></tr><tr><th >Transport charges:</th><td  style=\"text-align:right\">"+transport+"/-</td></tr><tr><th><b>Grand Total:</th><th  style=\"text-align:right\">"+grandTotal+"/-</th></tr><tr><td></td><th  style=\"text-align:right\">+18%GST</b></th></div></div>");
 
       }
   
@@ -581,6 +608,7 @@ var p;
 document.querySelector('input').addEventListener('change', function()
          {
             var reader = new FileReader();
+           
             reader.onload = function() {
                 var arrayBuffer = this.result,
                     array = new Uint8Array(arrayBuffer),
@@ -633,7 +661,7 @@ document.querySelector('input').addEventListener('change', function()
                  newexp=newexp.replace("q",qty);
                  //alert("new"+newexp)
                 if(size1!="" && size2!=""){
-              //size=size.split("by");
+              
               //alert("Size:"+size);
                temp=1;
               temp=temp*parseFloat(size1);
