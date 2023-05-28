@@ -18,7 +18,7 @@
     <body onload="resetValues()">
         <h1>Bill Intellect</h1>
         <hr>
-        <input type="file" id="data" accept=".xlsx"  style="margin-left:20px;" value="Stock Details.xlsx"/>
+        <input type="file" id="data" accept=".xlsx"  style="margin-left:20px;" />
          <button class="addminus" onclick="addForm()"> Add Product
                    </button>
         <div class="container-fluid">
@@ -582,7 +582,7 @@ document.querySelector('input').addEventListener('change', function()
          {
             var reader = new FileReader();
             reader.onload = function() {
-                var arrayBuffer = "Stock Details.xlsx",
+                var arrayBuffer = this.result,
                     array = new Uint8Array(arrayBuffer),
                     binaryString = String.fromCharCode.apply(null, array);
                 /* set up XMLHttpRequest */
